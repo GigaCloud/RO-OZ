@@ -198,7 +198,7 @@ void MainWindow::fisierModificat(){
                  qInfo()<<id;
              }
 
-             if(pieces[0] == "temp"){
+             if(pieces[0] == " temp"){
                   double temp = pieces[1].toDouble(&ok);
                   if(ok){
                      qInfo()<<"temp"<<temp;
@@ -208,7 +208,7 @@ void MainWindow::fisierModificat(){
                   }
              }
 
-             if(pieces[0] == "hum"){
+             if(pieces[0] == " hum"){
                   double hum = pieces[1].toDouble(&ok);
                   if(ok){
                      y_hum[linie_count_hum] = hum;

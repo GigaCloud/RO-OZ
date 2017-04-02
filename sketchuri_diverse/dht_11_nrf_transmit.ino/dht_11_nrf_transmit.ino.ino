@@ -2,15 +2,21 @@
 #include "printf.h"
 #include "nRF24L01.h"
 #include "RF24.h"
-#include <DHT11.h>
-#define DHT11_PIN A5
 
-DHT11 dht(DHT11_PIN);
-RF24 radio(9, 10);
+
+RF24 radio(6, 5);
 
 const uint64_t pipe = 0xE8E8F0F0E1LL;
 
-float humi,temp;
+int humi;
+
+struct PacketBase{
+  int id;
+  float hum;
+  float temp; 
+} packet;
+
+
 
 void setup(void) {
   Serial.begin(57600);
@@ -21,13 +27,9 @@ void setup(void) {
 }
 
 void loop() {
-    int err = dht.read(humi, temp);
-    if (err == 0){
-      Serial.print(humi);
-      Serial.print(" "); 
-      Serial.print(temp); 
-      Serial.print("\n");
-      radio.write(&humi, sizeof(humi));
-      delay(200);
-    }
-  }
+    packet.id = 1;
+    packet.hum = 2;
+    packet.temp = 3;
+    radio.write(&packet, sizeof(packet));
+}
+

@@ -1,71 +1,111 @@
-/* 
-    qbcan flight unit example.
-
-    This sketch reads temperature and pressure data on the flight unit and sends it to the Ground station
-*/
-
-//Include the required libraries
 #include <qbcan.h>
 #include <Wire.h>
 #include <SPI.h>
-
-//Pressure sensor object
-BMP180 bmp;
-
-//Radio Parameters
-#define NODEID        2    //unique for each node on same network
-#define NETWORKID     100  //the same on all nodes that talk to each other
-#define GATEWAYID     1    //Receiving node
-#define ENCRYPTKEY    "CanSatRoOzCanSat" //exactly the same 16 characters/bytes on all nodes!
+#include <TinyGPS.h>
+#include <SoftwareSerial.h>
+#include "printf.h"
+#include "nRF24L01.h"
+#include "RF24.h"
 
 
-RFM69 radio;
+#define NODEID        2    
+#define NETWORKID     100  
+#define GATEWAYID     1    
+#define ENCRYPTKEY    "CanSatRoOzCanSat"
+#define lati          0
+#define longi         1
+#define alti          2
+
+RFM69 radio69;
+RF24 radio24(6, 5);
+TinyGPS gps;
+
+
+const uint64_t pipe = 0xE8E8F0F0E1LL;
+
+struct PacketBase{
+  int id;
+  float hum;
+  float temp; 
+} packet;
 
 char payload[50];
-double T,P;
+float GPS[3];
 
-void setup()
-{
-  //Initialize serial connection for debugging
-  Serial.begin(9600);
-  Serial.println("REBOOT");
 
-  // Initialize pressure sensor.
-  if (bmp.begin())
-    Serial.println("BMP180 init success");
-  else
-  {
-    //In case of error let user know of the problem
-    Serial.println("BMP180 init fail (disconnected?)\n\n");
- //   while(1); // Pause forever.
-  }
+void setup(){
 
-  //Initialize radio
-  radio.initialize(FREQUENCY,NODEID,NETWORKID);
-  radio.setHighPower(); //To use the high power capabilities of the RFM69HW
-  radio.encrypt(ENCRYPTKEY);
-  Serial.println("Transmitting at 433 Mhz");
+  Serial.begin(115200);
+  Serial1.begin(9600);
+
+  printf_begin();
+  radio24.begin();
+  radio24.printDetails();
+  radio24.openReadingPipe(1,pipe);
+  radio24.startListening();
+  
+  radio69.initialize(FREQUENCY,NODEID,NETWORKID);
+  radio69.setHighPower(); 
+  radio69.encrypt(ENCRYPTKEY);
+ 
 
 }
 
-void loop()
-{
-  
-  // Get a new pressure reading:
-  bmp.getData(T,P);
+void readGPS(){
+  bool newData = false;
 
-  //Display data
-  Serial.print("Absolute pressure: ");
-  Serial.print(P,2);
-  Serial.println(" mb.");
-  Serial.print("Temperature: ");
-  Serial.print(T,2);
-  Serial.println(" deg C.");
+  while (Serial1.available()){
+     char c = Serial1.read();
+     if (gps.encode(c))
+     newData = true;
+  }
 
-  sprintf(payload,"T: %d, P: %d", (int)T, (int)P);
+  if (newData){
+    float flat, flon;
+    unsigned long age;
+    gps.f_get_position(&flat, &flon, &age);
 
-  //Send Data
-  radio.send(GATEWAYID, payload, sizeof(payload));
-  Serial.println("Send complete");
-  //delay(500);
+    GPS[lati]  = flat;
+    GPS[longi] = flon;
+    GPS[alti]  = 0; //TO-DO 
+    
+  }
+}
+
+void readNRF(){
+  if (radio24.available()){
+   bool done = false;    
+   while (!done){
+     done = radio24.read(&packet, sizeof(packet));        
+     Serial.print("id:");
+     Serial.print(packet.id);
+     Serial.print("\n");
+     Serial.print("hum:");
+     Serial.print(packet.hum);
+     Serial.print("\n");
+     Serial.print("temp:");
+     Serial.print(packet.temp);
+     Serial.print("\n");
+      
+     sprintf(payload,"id: %d \n hum: %d \n temp: %d \n", (int)packet.id, (int)packet.hum, (int)packet.temp);
+
+     radio69.send(GATEWAYID, payload, sizeof(payload));  
+    }
+  }
+}
+
+unsigned long long gpsTime;
+
+void loop(){
+
+  readGPS();
+  if(millis() - gpsTime > 1000){
+     if(GPS[lati] != 0.0) 
+       Serial.println(GPS[lati]);
+       gpsTime = millis();
+  }
+    
+  readNRF();
+
+
 }
