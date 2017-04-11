@@ -5,6 +5,7 @@
 RF24 radio(9,10);
 
 const uint64_t pipe = 0xE8E8F0F0E1LL;
+//const uint64_t pipe = 0xE7E7E7E7E7LL;
 struct PacketBase{
   int id;
   float hum;
@@ -17,7 +18,7 @@ void setup() {
   Serial.begin(9600);
   printf_begin();
   radio.begin();
-//  radio.printDetails();
+  radio.printDetails();
   radio.openReadingPipe(1,pipe);
   radio.startListening();
 }

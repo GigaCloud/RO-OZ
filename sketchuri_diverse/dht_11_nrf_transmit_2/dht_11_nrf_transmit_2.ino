@@ -2,10 +2,16 @@
 #include "printf.h"
 #include "nRF24L01.h"
 #include "RF24.h"
-#include <DHT11.h>
-#define DHT11_PIN A5
 
-DHT11 dht(DHT11_PIN);
+#include "DHT.h"
+
+#define DHTPIN 2 
+
+#define DHTTYPE DHT11 
+
+DHT dht(DHTPIN, DHTTYPE);
+
+
 RF24 radio(9, 10);
 const uint64_t pipe = 0xE8E8F0F0E1LL;
 
@@ -26,9 +32,20 @@ void setup(void) {
 
 void loop() {
     packet.id = 2;
-    int err = dht.read(packet.hum, packet.temp);
-    if (err == 0){
-      radio.write(&packet, sizeof(packet));
- //     delay(10);
-    }
+    packet.hum = dht.readHumidity();
+    packet.temp = dht.readTemperature();
+   if (isnan(packet.hum) || isnan(packet.temp) ) {
+    Serial.println("Failed to read from DHT sensor!");
+    delay(200);
+    return;
+    
+   } else{
+
+    Serial.println(packet.hum);
+    Serial.println(packet.temp);
+    
+    radio.write(&packet, sizeof(packet));
+   }
+
+   delay(500);
   }

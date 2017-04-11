@@ -1,23 +1,23 @@
 #include <SPI.h>
 #include "nRF24L01.h"
 #include "RF24.h"
+#include "printf.h"
 char msg;
-RF24 radio(9,10);
+RF24 radio(6,5);
 const uint64_t pipe = 0xE8E8F0F0E1LL;
 
-struct packet{
-  unsigned int nIncercare;
-  unsigned long tInceput;
-  unsigned long tActual;
-  unsigned long tProcesare;
-  unsigned long tAnteriorScriere;
-  
-} actual_packet;
+struct PacketBase{
+  int id;
+  float hum;
+  float temp; 
+} packet;
+
 
 
 void setup(void){
  Serial.begin(57600);
  radio.begin();
+ printf_begin();
  radio.printDetails();
  radio.openReadingPipe(1,pipe);
  radio.startListening();
@@ -26,21 +26,17 @@ void loop(void){
  if (radio.available()){
    bool done = false;    
    while (!done){
-     done = radio.read(&actual_packet, sizeof(actual_packet));      
-   if(actual_packet.nIncercare){
-       Serial.print(actual_packet.nIncercare);
+     done = radio.read(&packet, sizeof(packet));      
+       Serial.print(packet.id);
        Serial.print("\t");
-       Serial.print(actual_packet.tInceput);
+       Serial.print(packet.temp);
        Serial.print("\t");
-       Serial.print(actual_packet.tActual);
-       Serial.print("\t");
-       Serial.print(actual_packet.tProcesare);
-       Serial.print("\t");
-       Serial.print(actual_packet.tAnteriorScriere);
+       Serial.print(packet.hum);
        Serial.print("\n");
-   }
   }
  }
-//   else{Serial.println("No radio available");}
+   //else{Serial.println("No radio available");}
+
+   //radio.printDetails();
  }
 
