@@ -6,8 +6,7 @@
 
 QT += core gui printsupport
 QT += serialport
-QT += webengine
-QT += webview
+QT += webenginewidgets webchannel
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = RO-OZ_graph
