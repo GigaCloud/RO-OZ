@@ -3,7 +3,7 @@
 #include "RF24.h"
 #include "printf.h"
 char msg;
-RF24 radio(6,5);
+RF24 radio(9,10);
 const uint64_t pipe = 0xE8E8F0F0E1LL;
 
 struct PacketBase{
@@ -27,10 +27,11 @@ void loop(void){
    bool done = false;    
    while (!done){
      done = radio.read(&packet, sizeof(packet));      
+       Serial.print("id: ");
        Serial.print(packet.id);
-       Serial.print("\t");
+       Serial.print("\ntemp: ");
        Serial.print(packet.temp);
-       Serial.print("\t");
+       Serial.print("\nhum: ");
        Serial.print(packet.hum);
        Serial.print("\n");
   }

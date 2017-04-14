@@ -25,37 +25,25 @@ void setup(void){
  radio.openWritingPipe(pipe);
 }
 
-void(* resetFunc) (void) = 0; 
 
 int err;
 float temp, humi;
 
 void loop(void){
-  
+
   packet.id = 1;
-  packet.hum = 0;
-  packet.temp = 0;
-
-
-  packet.hum += humi;
-  packet.temp += temp;
   
-  if((err=dht11.read(humi, temp))==0){
-       Serial.print(temp);
+  if((err=dht11.read(packet.hum, packet.temp))==0){
+       Serial.print(packet.temp);
        Serial.print(' ');
-       Serial.println(humi);
+       Serial.println(packet.hum);
   }
-  else{
-    Serial.println(err);
-  } 
-
-   radio.write(&packet, sizeof(packet));
-
   
-  //delay(200);
+  radio.write(&packet, sizeof(packet));
 
- //delay(DHT11_RETRY_DELAY);
+  radio.powerDown();
+  delay(200);
+  radio.powerUp();
 
- //resetFunc();
  
 }

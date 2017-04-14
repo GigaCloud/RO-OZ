@@ -8,8 +8,9 @@
 #include <QTime>
 #include <QThread>
 #include <QElapsedTimer>
-
 QElapsedTimer timer;
+
+
 
 MainWindow::MainWindow(QWidget *parent):
     QMainWindow(parent),

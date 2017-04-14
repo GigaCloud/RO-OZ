@@ -4,9 +4,10 @@
 #
 #-------------------------------------------------
 
-QT       += core gui printsupport
+QT += core gui printsupport
 QT += serialport
-
+QT += webengine
+QT += webview
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = RO-OZ_graph
@@ -25,10 +26,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
+        mainwindow.cpp\
     qcustomplot.cpp
 
-HEADERS  += mainwindow.h \
+HEADERS  += mainwindow.h\
     qcustomplot.h
 
 FORMS    += mainwindow.ui
