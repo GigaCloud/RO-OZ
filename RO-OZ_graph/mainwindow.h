@@ -31,6 +31,7 @@ private slots:
 
     void portRead();
 
+    void updateMap(float lat, float lon, int zoom);
 
 private:
     Ui::MainWindow *ui;

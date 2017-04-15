@@ -8,15 +8,26 @@
 #include <QTime>
 #include <QThread>
 #include <QElapsedTimer>
+#include <QWebEngineView>
+#include <QWebChannel>
+#include <QUrl>
+
 QElapsedTimer timer;
-
-
 
 MainWindow::MainWindow(QWidget *parent):
     QMainWindow(parent),
         ui(new Ui::MainWindow) {
             ui->setupUi(this);
             setWindowTitle("RO-OZ");
+
+            ui->map->setContextMenuPolicy(Qt::NoContextMenu);
+            QWebEnginePage *page = new QWebEnginePage(this);
+            ui->map->setPage(page);
+            QWebChannel *channel = new QWebChannel(this);
+            page->setWebChannel(channel);
+
+            ui->map->setUrl(QUrl("https://www.openstreetmap.org"));
+
         }
 
 MainWindow::~MainWindow() {
@@ -51,6 +62,7 @@ bool searchPort(QString portName) {
         }
     }
     return false;
+
 }
 
 bool openPort(int baud) {
@@ -129,6 +141,7 @@ void MainWindow::on_searchButton_clicked() {
         qInfo() << "Name : " << info.portName();
         ui->comList->addItem(info.portName());
     }
+    updateMap(46.94, 26.35, 8);
 
 }
 
@@ -165,6 +178,17 @@ double maximumValue(QVector<double> vector1, QVector<double> vector2, int linie_
     maxim2 += 1;
 
     return (maxim1>maxim2)? maxim1 : maxim2;
+}
+
+void MainWindow::updateMap(float lat, float lon, int zoom){
+//https://www.openstreetmap.org/?mlat=46.9437&mlon=26.367#map=12/46.9437/26.3670
+    QString url_string = "https://www.openstreetmap.org/?mlat=";
+    url_string += QString::number(lat);
+    url_string += "/&mlon=";
+    url_string += QString::number(lon);
+    url_string += "/#map=";
+    url_string += QString::number(zoom);
+    ui->map->setUrl(QUrl(url_string));
 }
 
 
@@ -206,8 +230,8 @@ void MainWindow::fisierModificat() {
                 }
 
                 switch(id){
-                    case 0:{
-                        ///
+                    case -1:{
+
 
                     }
 

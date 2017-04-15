@@ -193,7 +193,7 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>81</width>
+       <width>91</width>
        <height>31</height>
       </rect>
      </property>
@@ -232,7 +232,7 @@ p, li { white-space: pre-wrap; }
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>81</width>
+       <width>91</width>
        <height>31</height>
       </rect>
      </property>
@@ -271,7 +271,7 @@ p, li { white-space: pre-wrap; }
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>81</width>
+       <width>91</width>
        <height>31</height>
       </rect>
      </property>
@@ -320,7 +320,7 @@ p, li { white-space: pre-wrap; }
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>91</width>
+       <width>111</width>
        <height>31</height>
       </rect>
      </property>
@@ -345,11 +345,11 @@ p, li { white-space: pre-wrap; }
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>1030</x>
-      <y>290</y>
+      <x>1120</x>
+      <y>150</y>
       <width>135</width>
       <height>83</height>
      </rect>
@@ -378,6 +378,17 @@ p, li { white-space: pre-wrap; }
      </item>
     </layout>
    </widget>
+   <widget class="QWebEngineView" name="map" native="true">
+    <property name="geometry">
+     <rect>
+      <x>660</x>
+      <y>420</y>
+      <width>601</width>
+      <height>501</height>
+     </rect>
+    </property>
+   </widget>
+   <zorder>layoutWidget</zorder>
    <zorder>Toto1</zorder>
    <zorder>layoutWidget</zorder>
    <zorder>layoutWidget</zorder>
@@ -388,10 +399,7 @@ p, li { white-space: pre-wrap; }
    <zorder>Toto3Color</zorder>
    <zorder>Dorothy</zorder>
    <zorder>DorothyColor</zorder>
-   <zorder>latitude</zorder>
-   <zorder>longitude</zorder>
-   <zorder>altitude</zorder>
-   <zorder>latitude</zorder>
+   <zorder>map</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -399,7 +407,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>1920</width>
-     <height>23</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>
@@ -415,6 +423,12 @@ p, li { white-space: pre-wrap; }
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
+  <customwidget>
+   <class>QWebEngineView</class>
+   <extends>QWidget</extends>
+   <header>qwebengineview.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>QCustomPlot</class>
    <extends>QWidget</extends>
