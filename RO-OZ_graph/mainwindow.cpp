@@ -49,6 +49,7 @@ int id;
 int Toto1Alive;
 int Toto2Alive;
 int Toto3Alive;
+float lat, lon;
 
 bool searchPort(QString portName) {
     foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()) {
@@ -122,7 +123,6 @@ void MainWindow::on_portName_returnPressed() {/*Enter <=> press button*/
 
 
 void MainWindow::on_readButton_clicked() {
-
     QObject::connect(&port, SIGNAL (readyRead()), this, SLOT(portRead()));
     timer.start();
 
@@ -198,14 +198,13 @@ void MainWindow::fisierModificat() {
         ++linie_count_hum[i];
         ++linie_count_temp[i];
     }
-
+    qInfo()<<"Fisier modificat";
 
     QVector<double> x_temp_1(linie_count_temp[1] + 100), y_temp_1(linie_count_temp[1] + 100);
     QVector<double> x_hum_1(linie_count_hum[1] + 100), y_hum_1(linie_count_hum[2] + 100);
 
     QVector<double> x_temp_2(linie_count_temp[2] + 100), y_temp_2(linie_count_temp[2] + 100);
     QVector<double> x_hum_2(linie_count_hum[2] + 100), y_hum_2(linie_count_hum[2] + 100);
-
 
     QVector<double> x_temp_3(linie_count_temp[3] + 100), y_temp_3(linie_count_temp[3] + 100);
     QVector<double> x_hum_3(linie_count_hum[3] + 100), y_hum_3(linie_count_hum[3] + 100);
@@ -214,6 +213,7 @@ void MainWindow::fisierModificat() {
         linie_count_hum[i]  = 0;
         linie_count_temp[i] = 0;
     }
+
 
     QFile inputFile(fileName);
     if (inputFile.open(QIODevice::ReadOnly)){
@@ -224,15 +224,16 @@ void MainWindow::fisierModificat() {
             qInfo()<<line;
             QStringList pieces = line.split(":");
             if(pieces.size() > 1){
+                qInfo()<<pieces[0];
                 if(pieces[0] == "id"){
                     id = pieces[1].toInt();
                     qInfo()<<id;
                 }
 
-                switch(id){
+                switch(id)
+                {
                     case -1:{
-
-
+                        qInfo()<<"Fara date de la sonda";
                     }
 
                     case 1:{
@@ -307,7 +308,66 @@ void MainWindow::fisierModificat() {
                         break;
                     }
                 }
+
+                if(pieces[0] == "lat"){
+                    lat = pieces[1].toInt();
+                }
+
+                if(pieces[0] == "lon"){
+                    lon = pieces[1].toInt();
+                }
+
+                if(pieces[0] == "lat_p"){
+                    ui->latitude->setText(pieces[1]);
+                }
+
+                if(pieces[0] == "a_x"){
+                    ui->accx->setText(pieces[1]);
+                }
+
+                if(pieces[0] == "a_y"){
+
+                }
+
+                if(pieces[0] == "a_z"){
+
+                }
+
+                if(pieces[0] == "g_x"){
+
+                }
+
+                if(pieces[0] == "g_y"){
+
+                }
+
+                if(pieces[0] == "g_z"){
+
+                }
+
+                if(pieces[0] == "m_x"){
+
+                }
+
+                if(pieces[0] == "m_y"){
+
+                }
+
+                if(pieces[0] == "m_z"){
+
+                }
+
+                if(pieces[0] == "P"){
+
+                }
+
+                if(pieces[0] == "T"){
+
+                }
+
+
             }
+
         }
         inputFile.close();
     }

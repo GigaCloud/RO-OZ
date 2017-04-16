@@ -14,8 +14,10 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QComboBox>
+#include <QtWidgets/QFrame>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
@@ -39,7 +41,7 @@ public:
     QPushButton *fileButton;
     QLineEdit *fileBox;
     QWidget *layoutWidget1;
-    QHBoxLayout *horizontalLayout;
+    QHBoxLayout *PortStuff;
     QPushButton *openPort;
     QVBoxLayout *verticalLayout;
     QComboBox *comList;
@@ -59,12 +61,59 @@ public:
     QCustomPlot *Dorothy;
     QWidget *DorothyColor;
     QTextBrowser *DorothyText;
-    QWidget *layoutWidget2;
+    QWebEngineView *map;
+    QWidget *widget;
+    QVBoxLayout *MagnetoGyro;
+    QHBoxLayout *Magneto;
+    QVBoxLayout *Lables_6;
+    QLabel *label_16;
+    QLabel *label_17;
+    QLabel *label_18;
+    QVBoxLayout *DorothyGPS_6;
+    QLineEdit *magnetox;
+    QLineEdit *magnetoy;
+    QLineEdit *magnetoz;
+    QFrame *line_3;
+    QHBoxLayout *Gyro;
+    QVBoxLayout *Lables_5;
+    QLabel *label_13;
+    QLabel *label_14;
+    QLabel *label_15;
+    QVBoxLayout *DorothyGPS_5;
+    QLineEdit *gyrox;
+    QLineEdit *gyroy;
+    QLineEdit *gyroz;
+    QWidget *widget1;
+    QVBoxLayout *GPS_PTA_Acc;
+    QHBoxLayout *LatLonAlt;
+    QVBoxLayout *Lables;
+    QLabel *label;
+    QLabel *label_2;
+    QLabel *label_3;
     QVBoxLayout *DorothyGPS;
     QLineEdit *latitude;
     QLineEdit *longitude;
     QLineEdit *altitude;
-    QWebEngineView *map;
+    QFrame *line_2;
+    QHBoxLayout *PTA;
+    QVBoxLayout *Lables_2;
+    QLabel *label_4;
+    QLabel *label_5;
+    QLabel *label_6;
+    QVBoxLayout *DorothyGPS_2;
+    QLineEdit *pressure;
+    QLineEdit *temperature;
+    QLineEdit *altitude_2;
+    QFrame *line;
+    QHBoxLayout *Acc;
+    QVBoxLayout *Lables_3;
+    QLabel *label_7;
+    QLabel *label_8;
+    QLabel *label_9;
+    QVBoxLayout *DorothyGPS_3;
+    QLineEdit *accx;
+    QLineEdit *accy;
+    QLineEdit *accz;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -74,7 +123,7 @@ public:
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
         MainWindow->resize(1920, 1080);
-        MainWindow->setMinimumSize(QSize(1920, 1080));
+        MainWindow->setMinimumSize(QSize(1000, 1000));
         MainWindow->setMaximumSize(QSize(16777215, 16777215));
         MainWindow->setMouseTracking(false);
         MainWindow->setStyleSheet(QStringLiteral("font: 10pt \"Segoe UI\";"));
@@ -102,15 +151,15 @@ public:
         layoutWidget1 = new QWidget(widget_plot);
         layoutWidget1->setObjectName(QStringLiteral("layoutWidget1"));
         layoutWidget1->setGeometry(QRect(740, 10, 449, 60));
-        horizontalLayout = new QHBoxLayout(layoutWidget1);
-        horizontalLayout->setSpacing(6);
-        horizontalLayout->setContentsMargins(11, 11, 11, 11);
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
-        horizontalLayout->setContentsMargins(0, 0, 0, 0);
+        PortStuff = new QHBoxLayout(layoutWidget1);
+        PortStuff->setSpacing(6);
+        PortStuff->setContentsMargins(11, 11, 11, 11);
+        PortStuff->setObjectName(QStringLiteral("PortStuff"));
+        PortStuff->setContentsMargins(0, 0, 0, 0);
         openPort = new QPushButton(layoutWidget1);
         openPort->setObjectName(QStringLiteral("openPort"));
 
-        horizontalLayout->addWidget(openPort);
+        PortStuff->addWidget(openPort);
 
         verticalLayout = new QVBoxLayout();
         verticalLayout->setSpacing(6);
@@ -126,22 +175,22 @@ public:
         verticalLayout->addWidget(baudList);
 
 
-        horizontalLayout->addLayout(verticalLayout);
+        PortStuff->addLayout(verticalLayout);
 
         searchButton = new QPushButton(layoutWidget1);
         searchButton->setObjectName(QStringLiteral("searchButton"));
 
-        horizontalLayout->addWidget(searchButton);
+        PortStuff->addWidget(searchButton);
 
         portName = new QLineEdit(layoutWidget1);
         portName->setObjectName(QStringLiteral("portName"));
 
-        horizontalLayout->addWidget(portName);
+        PortStuff->addWidget(portName);
 
         readButton = new QPushButton(layoutWidget1);
         readButton->setObjectName(QStringLiteral("readButton"));
 
-        horizontalLayout->addWidget(readButton);
+        PortStuff->addWidget(readButton);
 
         Toto2 = new QCustomPlot(widget_plot);
         Toto2->setObjectName(QStringLiteral("Toto2"));
@@ -195,32 +244,307 @@ public:
         DorothyText->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         DorothyText->setAcceptRichText(true);
         DorothyText->setTextInteractionFlags(Qt::NoTextInteraction);
-        layoutWidget2 = new QWidget(widget_plot);
-        layoutWidget2->setObjectName(QStringLiteral("layoutWidget2"));
-        layoutWidget2->setGeometry(QRect(1120, 150, 135, 83));
-        DorothyGPS = new QVBoxLayout(layoutWidget2);
+        map = new QWebEngineView(widget_plot);
+        map->setObjectName(QStringLiteral("map"));
+        map->setGeometry(QRect(650, 570, 601, 361));
+        widget = new QWidget(widget_plot);
+        widget->setObjectName(QStringLiteral("widget"));
+        widget->setGeometry(QRect(970, 150, 221, 191));
+        MagnetoGyro = new QVBoxLayout(widget);
+        MagnetoGyro->setSpacing(6);
+        MagnetoGyro->setContentsMargins(11, 11, 11, 11);
+        MagnetoGyro->setObjectName(QStringLiteral("MagnetoGyro"));
+        MagnetoGyro->setContentsMargins(0, 0, 0, 0);
+        Magneto = new QHBoxLayout();
+        Magneto->setSpacing(6);
+        Magneto->setObjectName(QStringLiteral("Magneto"));
+        Lables_6 = new QVBoxLayout();
+        Lables_6->setSpacing(6);
+        Lables_6->setObjectName(QStringLiteral("Lables_6"));
+        label_16 = new QLabel(widget);
+        label_16->setObjectName(QStringLiteral("label_16"));
+        QFont font;
+        font.setFamily(QStringLiteral("Segoe UI"));
+        font.setPointSize(10);
+        font.setBold(false);
+        font.setItalic(false);
+        font.setWeight(50);
+        label_16->setFont(font);
+
+        Lables_6->addWidget(label_16);
+
+        label_17 = new QLabel(widget);
+        label_17->setObjectName(QStringLiteral("label_17"));
+        label_17->setFont(font);
+
+        Lables_6->addWidget(label_17);
+
+        label_18 = new QLabel(widget);
+        label_18->setObjectName(QStringLiteral("label_18"));
+        label_18->setFont(font);
+
+        Lables_6->addWidget(label_18);
+
+
+        Magneto->addLayout(Lables_6);
+
+        DorothyGPS_6 = new QVBoxLayout();
+        DorothyGPS_6->setSpacing(6);
+        DorothyGPS_6->setObjectName(QStringLiteral("DorothyGPS_6"));
+        magnetox = new QLineEdit(widget);
+        magnetox->setObjectName(QStringLiteral("magnetox"));
+
+        DorothyGPS_6->addWidget(magnetox);
+
+        magnetoy = new QLineEdit(widget);
+        magnetoy->setObjectName(QStringLiteral("magnetoy"));
+
+        DorothyGPS_6->addWidget(magnetoy);
+
+        magnetoz = new QLineEdit(widget);
+        magnetoz->setObjectName(QStringLiteral("magnetoz"));
+
+        DorothyGPS_6->addWidget(magnetoz);
+
+
+        Magneto->addLayout(DorothyGPS_6);
+
+
+        MagnetoGyro->addLayout(Magneto);
+
+        line_3 = new QFrame(widget);
+        line_3->setObjectName(QStringLiteral("line_3"));
+        line_3->setFrameShape(QFrame::HLine);
+        line_3->setFrameShadow(QFrame::Sunken);
+
+        MagnetoGyro->addWidget(line_3);
+
+        Gyro = new QHBoxLayout();
+        Gyro->setSpacing(6);
+        Gyro->setObjectName(QStringLiteral("Gyro"));
+        Lables_5 = new QVBoxLayout();
+        Lables_5->setSpacing(6);
+        Lables_5->setObjectName(QStringLiteral("Lables_5"));
+        label_13 = new QLabel(widget);
+        label_13->setObjectName(QStringLiteral("label_13"));
+        label_13->setFont(font);
+
+        Lables_5->addWidget(label_13);
+
+        label_14 = new QLabel(widget);
+        label_14->setObjectName(QStringLiteral("label_14"));
+        label_14->setFont(font);
+
+        Lables_5->addWidget(label_14);
+
+        label_15 = new QLabel(widget);
+        label_15->setObjectName(QStringLiteral("label_15"));
+        label_15->setFont(font);
+
+        Lables_5->addWidget(label_15);
+
+
+        Gyro->addLayout(Lables_5);
+
+        DorothyGPS_5 = new QVBoxLayout();
+        DorothyGPS_5->setSpacing(6);
+        DorothyGPS_5->setObjectName(QStringLiteral("DorothyGPS_5"));
+        gyrox = new QLineEdit(widget);
+        gyrox->setObjectName(QStringLiteral("gyrox"));
+
+        DorothyGPS_5->addWidget(gyrox);
+
+        gyroy = new QLineEdit(widget);
+        gyroy->setObjectName(QStringLiteral("gyroy"));
+
+        DorothyGPS_5->addWidget(gyroy);
+
+        gyroz = new QLineEdit(widget);
+        gyroz->setObjectName(QStringLiteral("gyroz"));
+
+        DorothyGPS_5->addWidget(gyroz);
+
+
+        Gyro->addLayout(DorothyGPS_5);
+
+
+        MagnetoGyro->addLayout(Gyro);
+
+        widget1 = new QWidget(widget_plot);
+        widget1->setObjectName(QStringLiteral("widget1"));
+        widget1->setGeometry(QRect(740, 150, 221, 287));
+        GPS_PTA_Acc = new QVBoxLayout(widget1);
+        GPS_PTA_Acc->setSpacing(6);
+        GPS_PTA_Acc->setContentsMargins(11, 11, 11, 11);
+        GPS_PTA_Acc->setObjectName(QStringLiteral("GPS_PTA_Acc"));
+        GPS_PTA_Acc->setContentsMargins(0, 0, 0, 0);
+        LatLonAlt = new QHBoxLayout();
+        LatLonAlt->setSpacing(6);
+        LatLonAlt->setObjectName(QStringLiteral("LatLonAlt"));
+        Lables = new QVBoxLayout();
+        Lables->setSpacing(6);
+        Lables->setObjectName(QStringLiteral("Lables"));
+        label = new QLabel(widget1);
+        label->setObjectName(QStringLiteral("label"));
+        label->setFont(font);
+
+        Lables->addWidget(label);
+
+        label_2 = new QLabel(widget1);
+        label_2->setObjectName(QStringLiteral("label_2"));
+        label_2->setFont(font);
+
+        Lables->addWidget(label_2);
+
+        label_3 = new QLabel(widget1);
+        label_3->setObjectName(QStringLiteral("label_3"));
+        label_3->setFont(font);
+
+        Lables->addWidget(label_3);
+
+
+        LatLonAlt->addLayout(Lables);
+
+        DorothyGPS = new QVBoxLayout();
         DorothyGPS->setSpacing(6);
-        DorothyGPS->setContentsMargins(11, 11, 11, 11);
         DorothyGPS->setObjectName(QStringLiteral("DorothyGPS"));
-        DorothyGPS->setContentsMargins(0, 0, 0, 0);
-        latitude = new QLineEdit(layoutWidget2);
+        latitude = new QLineEdit(widget1);
         latitude->setObjectName(QStringLiteral("latitude"));
 
         DorothyGPS->addWidget(latitude);
 
-        longitude = new QLineEdit(layoutWidget2);
+        longitude = new QLineEdit(widget1);
         longitude->setObjectName(QStringLiteral("longitude"));
 
         DorothyGPS->addWidget(longitude);
 
-        altitude = new QLineEdit(layoutWidget2);
+        altitude = new QLineEdit(widget1);
         altitude->setObjectName(QStringLiteral("altitude"));
 
         DorothyGPS->addWidget(altitude);
 
-        map = new QWebEngineView(widget_plot);
-        map->setObjectName(QStringLiteral("map"));
-        map->setGeometry(QRect(660, 420, 601, 501));
+
+        LatLonAlt->addLayout(DorothyGPS);
+
+
+        GPS_PTA_Acc->addLayout(LatLonAlt);
+
+        line_2 = new QFrame(widget1);
+        line_2->setObjectName(QStringLiteral("line_2"));
+        line_2->setFrameShape(QFrame::HLine);
+        line_2->setFrameShadow(QFrame::Sunken);
+
+        GPS_PTA_Acc->addWidget(line_2);
+
+        PTA = new QHBoxLayout();
+        PTA->setSpacing(6);
+        PTA->setObjectName(QStringLiteral("PTA"));
+        Lables_2 = new QVBoxLayout();
+        Lables_2->setSpacing(6);
+        Lables_2->setObjectName(QStringLiteral("Lables_2"));
+        label_4 = new QLabel(widget1);
+        label_4->setObjectName(QStringLiteral("label_4"));
+        label_4->setFont(font);
+
+        Lables_2->addWidget(label_4);
+
+        label_5 = new QLabel(widget1);
+        label_5->setObjectName(QStringLiteral("label_5"));
+        label_5->setFont(font);
+
+        Lables_2->addWidget(label_5);
+
+        label_6 = new QLabel(widget1);
+        label_6->setObjectName(QStringLiteral("label_6"));
+        label_6->setFont(font);
+
+        Lables_2->addWidget(label_6);
+
+
+        PTA->addLayout(Lables_2);
+
+        DorothyGPS_2 = new QVBoxLayout();
+        DorothyGPS_2->setSpacing(6);
+        DorothyGPS_2->setObjectName(QStringLiteral("DorothyGPS_2"));
+        pressure = new QLineEdit(widget1);
+        pressure->setObjectName(QStringLiteral("pressure"));
+
+        DorothyGPS_2->addWidget(pressure);
+
+        temperature = new QLineEdit(widget1);
+        temperature->setObjectName(QStringLiteral("temperature"));
+
+        DorothyGPS_2->addWidget(temperature);
+
+        altitude_2 = new QLineEdit(widget1);
+        altitude_2->setObjectName(QStringLiteral("altitude_2"));
+
+        DorothyGPS_2->addWidget(altitude_2);
+
+
+        PTA->addLayout(DorothyGPS_2);
+
+
+        GPS_PTA_Acc->addLayout(PTA);
+
+        line = new QFrame(widget1);
+        line->setObjectName(QStringLiteral("line"));
+        line->setFrameShape(QFrame::HLine);
+        line->setFrameShadow(QFrame::Sunken);
+
+        GPS_PTA_Acc->addWidget(line);
+
+        Acc = new QHBoxLayout();
+        Acc->setSpacing(6);
+        Acc->setObjectName(QStringLiteral("Acc"));
+        Lables_3 = new QVBoxLayout();
+        Lables_3->setSpacing(6);
+        Lables_3->setObjectName(QStringLiteral("Lables_3"));
+        label_7 = new QLabel(widget1);
+        label_7->setObjectName(QStringLiteral("label_7"));
+        label_7->setFont(font);
+
+        Lables_3->addWidget(label_7);
+
+        label_8 = new QLabel(widget1);
+        label_8->setObjectName(QStringLiteral("label_8"));
+        label_8->setFont(font);
+
+        Lables_3->addWidget(label_8);
+
+        label_9 = new QLabel(widget1);
+        label_9->setObjectName(QStringLiteral("label_9"));
+        label_9->setFont(font);
+
+        Lables_3->addWidget(label_9);
+
+
+        Acc->addLayout(Lables_3);
+
+        DorothyGPS_3 = new QVBoxLayout();
+        DorothyGPS_3->setSpacing(6);
+        DorothyGPS_3->setObjectName(QStringLiteral("DorothyGPS_3"));
+        accx = new QLineEdit(widget1);
+        accx->setObjectName(QStringLiteral("accx"));
+
+        DorothyGPS_3->addWidget(accx);
+
+        accy = new QLineEdit(widget1);
+        accy->setObjectName(QStringLiteral("accy"));
+
+        DorothyGPS_3->addWidget(accy);
+
+        accz = new QLineEdit(widget1);
+        accz->setObjectName(QStringLiteral("accz"));
+
+        DorothyGPS_3->addWidget(accz);
+
+
+        Acc->addLayout(DorothyGPS_3);
+
+
+        GPS_PTA_Acc->addLayout(Acc);
+
         MainWindow->setCentralWidget(widget_plot);
         layoutWidget->raise();
         Toto1->raise();
@@ -289,9 +613,36 @@ public:
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Segoe UI'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:14pt; font-weight:600;\">Dorothy</span></p></body></html>", Q_NULLPTR));
+        label_16->setText(QApplication::translate("MainWindow", "Magneto X:    ", Q_NULLPTR));
+        label_17->setText(QApplication::translate("MainWindow", "Magneto Y:", Q_NULLPTR));
+        label_18->setText(QApplication::translate("MainWindow", "Magneto Z:", Q_NULLPTR));
+        magnetox->setText(QString());
+        magnetoy->setText(QString());
+        magnetoz->setText(QString());
+        label_13->setText(QApplication::translate("MainWindow", "Gyro X - Roll:", Q_NULLPTR));
+        label_14->setText(QApplication::translate("MainWindow", "Gyro Y - Pitch:", Q_NULLPTR));
+        label_15->setText(QApplication::translate("MainWindow", "Gyro Z - Yaw:", Q_NULLPTR));
+        gyrox->setText(QString());
+        gyroy->setText(QString());
+        gyroz->setText(QString());
+        label->setText(QApplication::translate("MainWindow", "Latitude:          ", Q_NULLPTR));
+        label_2->setText(QApplication::translate("MainWindow", "Longitude:", Q_NULLPTR));
+        label_3->setText(QApplication::translate("MainWindow", "Altitude:", Q_NULLPTR));
         latitude->setText(QString());
         longitude->setText(QString());
         altitude->setText(QString());
+        label_4->setText(QApplication::translate("MainWindow", "Pressure:", Q_NULLPTR));
+        label_5->setText(QApplication::translate("MainWindow", "Temperature:   ", Q_NULLPTR));
+        label_6->setText(QApplication::translate("MainWindow", "Altitude:", Q_NULLPTR));
+        pressure->setText(QString());
+        temperature->setText(QString());
+        altitude_2->setText(QString());
+        label_7->setText(QApplication::translate("MainWindow", "Acceleration X:", Q_NULLPTR));
+        label_8->setText(QApplication::translate("MainWindow", "Acceleration Y: ", Q_NULLPTR));
+        label_9->setText(QApplication::translate("MainWindow", "Acceleration Z:", Q_NULLPTR));
+        accx->setText(QString());
+        accy->setText(QString());
+        accz->setText(QString());
     } // retranslateUi
 
 };

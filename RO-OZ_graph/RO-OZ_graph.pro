@@ -3,7 +3,7 @@
 # Project created by QtCreator 2017-03-22T22:56:21
 #
 #-------------------------------------------------
-
+win32:RC_ICONS += icon.ico
 QT += core gui printsupport
 QT += serialport
 QT += webenginewidgets webchannel webengine
@@ -32,3 +32,5 @@ HEADERS  += mainwindow.h\
     qcustomplot.h
 
 FORMS    += mainwindow.ui
+
+DISTFILES +=
