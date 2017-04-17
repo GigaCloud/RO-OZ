@@ -19,10 +19,9 @@
 #define magneto_i2c 0x1E  
 
 RFM69 radio69;
-RF24 radio24(6, 5);
+RF24 radio24(5, 6);
 TinyGPS gps;
 GY80 sensor = GY80(); 
-
 
 const uint64_t pipe = 0xE8E8F0F0E1LL;
 
@@ -30,30 +29,26 @@ struct PacketBase{
   int id;
   float hum;
   float temp; 
-} 
-packet;
+} packet;
 
-char payload[200];
+char payload[30];
 
 float flat, flon;
-
 
 int x_magneto, y_magneto, z_magneto;                  
 int xCal=0, yCal=0, zCal=0; 
 int calValue = 1000;     
 
-
 void setup(){
-
   Serial.begin(115200);
   Serial1.begin(9600);
-  while(!Serial){
-    ;
-  }
+  while(!Serial){;}
+  
   Wire.begin();
   printf_begin();
+  
   radio24.begin();
-//  radio24.printDetails();
+  radio24.printDetails();
   radio24.openReadingPipe(1,pipe);
   radio24.startListening();
 
@@ -61,13 +56,10 @@ void setup(){
   radio69.setHighPower(); 
   radio69.encrypt(ENCRYPTKEY);
 
-
   magSetting(0x00, B01101000);
   magSetting(0x01, B01100000);
   calibrateMag();
   sensor.begin();
-
-
 }
 
 ///Magnetometer
@@ -117,35 +109,7 @@ void calibrateMag(){
   zCal = z_magneto - calValue;
 }
 
-
-/* How to read the GY-80
- //get values from all sensors
- // print out values
- 
- Serial.print("\n\nAcc:");                       
- Serial.print(val.a_x,3);
- Serial.print(' ');
- Serial.print(val.a_y,3);
- Serial.print(' ');
- Serial.print(val.a_z,3);
- Serial.print('\n');
- Serial.print("Gyro:");                      
- Serial.print(val.g_x,1);
- Serial.print(' ');
- Serial.print(val.g_y,1);
- Serial.print(' ');
- Serial.print(val.g_z,1);
- Serial.print('\n');
- Serial.print("P:");                         
- Serial.print(val.p,5);
- Serial.print('\n');
- Serial.print("T:");                         
- Serial.println(val.t,1);
- Serial.print("\n\n");
- */
-
-
-
+///GPS
 
 void readGPS(){
   bool newData = false;
@@ -159,7 +123,6 @@ void readGPS(){
   }
 
   if (newData){
-
     unsigned long age;
     gps.f_get_position(&flat, &flon, &age);
     Serial.print("flat: ");
@@ -173,32 +136,42 @@ void readGPS(){
   }
 }
 
+//NRF
 bool readNRF(){
   if (radio24.available()){
     bool done = false;
     while (!done){
       done = radio24.read(&packet, sizeof(packet));        
-      /*  Serial.print("id:");
-       Serial.print(packet.id);
-       Serial.print("\n");
-       Serial.print("hum:");
-       Serial.print(packet.hum);
-       Serial.print("\n");
-       Serial.print("temp:");
-       Serial.print(packet.temp);
-       Serial.print("\n");*/
     }
     return true;
   }
   return false;
 }
 
+//RF69 encode packet for smaller size
+void encode(int16_t *in, char *encoded, int numbers){
+    int poz_in = 0;
+    int poz_encoded = 0;
+    int16_t x;
+    while(poz_in < numbers){
+      unsigned char b1, b2;
+      x = in[poz_in];
+      b1 = x >> 8;
+      b2 = (int16_t)(x<<8)>>8;
+      encoded[poz_encoded] = b1;
+      encoded[poz_encoded + 1] = b2;
+      poz_encoded += 2;
+      ++poz_in;
+    }
+}
+
 unsigned long long timeGPS;
 unsigned long long lastNRFTime;
+int v[17];
 
 void loop(){
 
-  readGPS();
+/*  readGPS();
 
   if(readNRF()){
     getMagnetoReadings();
@@ -226,6 +199,9 @@ void loop(){
   }
 
   if(millis() - lastNRFTime > 1000){
+
+    //radio24.printDetails();
+    
     getMagnetoReadings();
     printMagnetoReadings();
     GY80_scaled val = sensor.read_scaled();
@@ -245,7 +221,50 @@ void loop(){
       );
 
     Serial.println(payload);
-  }
-  radio69.send(GATEWAYID, payload, sizeof(payload));   
+  }*/
+
+
+   readGPS();
+   getMagnetoReadings();
+   GY80_scaled val = sensor.read_scaled()
+   
+   if(readNRF()){
+      v[0] = packet.id;
+      v[1] = packet.hum;
+      v[2] = packet.temp;
+      lastNRFTime = millis();
+   }
+   
+   if(millis() - lastNRFTime > 1000){
+      v[0] = -1;
+      v[1] =  0;
+      v[2] =  0;
+   }
+   
+   v[3] = val.p;
+   v[4] = val.t;
+   
+   v[5] = flat;
+   v[6] = flon;
+   v[7] = alti;
+
+   v[8]  = val.a_x; //ax
+   v[9]  = val.a_y; //ay
+   v[10] = val.a_z; //az
+
+   v[11] = val.g_x; //gx
+   v[12] = val.g_y; //gy
+   v[13] = val.g_z;//gz
+
+   v[14] = x_magneto; //mx
+   v[15] = y_magneto; //my
+   v[16] = z_magneto; //mz
+
+   for(int i = 0; i<17; ++i)
+        Serial.println(v[i]);
+
+   encode(v, payload, 17); 
+    
+   radio69.send(GATEWAYID, payload, sizeof(payload));   
 }
 

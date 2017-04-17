@@ -17,6 +17,10 @@ QElapsedTimer timer;
 MainWindow::MainWindow(QWidget *parent):
     QMainWindow(parent),
         ui(new Ui::MainWindow) {
+          /*  QFont font = QApplication::font();
+            font.setStyleStrategy(QFont::PreferQuality);
+            QApplication::setFont(font);*/
+
             ui->setupUi(this);
             setWindowTitle("RO-OZ");
 
@@ -49,7 +53,7 @@ int id;
 int Toto1Alive;
 int Toto2Alive;
 int Toto3Alive;
-float lat, lon;
+float lat = 46.94, lon =  26.35;
 
 bool searchPort(QString portName) {
     foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()) {
@@ -141,8 +145,6 @@ void MainWindow::on_searchButton_clicked() {
         qInfo() << "Name : " << info.portName();
         ui->comList->addItem(info.portName());
     }
-    updateMap(46.94, 26.35, 8);
-
 }
 
 void MainWindow::on_fileButton_clicked() {
@@ -158,6 +160,7 @@ void MainWindow::on_fileButton_clicked() {
 
     QObject::connect(&date, SIGNAL(fileChanged(QString)), this, SLOT(fisierModificat()));
 
+    QObject::connect(ui->zoom, SIGNAL(valueChanged(int)), this, SLOT(updateMap()));
 }
 
 
@@ -180,14 +183,19 @@ double maximumValue(QVector<double> vector1, QVector<double> vector2, int linie_
     return (maxim1>maxim2)? maxim1 : maxim2;
 }
 
-void MainWindow::updateMap(float lat, float lon, int zoom){
-//https://www.openstreetmap.org/?mlat=46.9437&mlon=26.367#map=12/46.9437/26.3670
+void MainWindow::updateMap(){
+    //https://www.openstreetmap.org/?mlat=46.9437&mlon=26.367#map=12/46.9437/26.3670
+    int zoom = ui->zoom->value();
     QString url_string = "https://www.openstreetmap.org/?mlat=";
     url_string += QString::number(lat);
     url_string += "/&mlon=";
     url_string += QString::number(lon);
     url_string += "/#map=";
     url_string += QString::number(zoom);
+    url_string += "/";
+    url_string += QString::number(lat);
+    url_string += "/";
+    url_string += QString::number(lon);
     ui->map->setUrl(QUrl(url_string));
 }
 
@@ -310,11 +318,30 @@ void MainWindow::fisierModificat() {
                 }
 
                 if(pieces[0] == "lat"){
-                    lat = pieces[1].toInt();
+                    QByteArray b = pieces[1].toLatin1();
+                    QString latWithDecimal;
+                    latWithDecimal += b[1];
+                    latWithDecimal += b[2];
+                    latWithDecimal += '.';
+                    for(int i=3; i<b.length(); ++i)
+                        latWithDecimal += b[i];
+                    lat = latWithDecimal.toFloat();
+                    ui->latitude->setText(latWithDecimal);
                 }
 
                 if(pieces[0] == "lon"){
-                    lon = pieces[1].toInt();
+                    QByteArray b = pieces[1].toLatin1();
+                    QString lonWithDecimal;
+                    lonWithDecimal += b[1];
+                    lonWithDecimal += b[2];
+                    lonWithDecimal += '.';
+                    for(int i=3; i<b.length(); ++i)
+                        lonWithDecimal += b[i];
+                    lon = lonWithDecimal.toFloat();
+                    ui->longitude->setText(lonWithDecimal);
+
+                    updateMap();
+                    //connect(ui->zoom, SIGNAL(valueChanged(int), this, updateMap(lat, lon, ui->zoom->value()));
                 }
 
                 if(pieces[0] == "lat_p"){
@@ -326,45 +353,44 @@ void MainWindow::fisierModificat() {
                 }
 
                 if(pieces[0] == "a_y"){
-
+                    ui->accy->setText(pieces[1]);
                 }
 
                 if(pieces[0] == "a_z"){
-
+                    ui->accz->setText(pieces[1]);
                 }
 
                 if(pieces[0] == "g_x"){
-
+                    ui->gyrox->setText(pieces[1]);
                 }
 
                 if(pieces[0] == "g_y"){
-
+                    ui->gyroy->setText(pieces[1]);
                 }
 
                 if(pieces[0] == "g_z"){
-
+                    ui->gyroz->setText(pieces[1]);
                 }
 
                 if(pieces[0] == "m_x"){
-
+                    ui->magnetox->setText(pieces[1]);
                 }
 
                 if(pieces[0] == "m_y"){
-
+                    ui->magnetoy->setText(pieces[1]);
                 }
 
                 if(pieces[0] == "m_z"){
-
+                    ui->magnetoz->setText(pieces[1]);
                 }
 
                 if(pieces[0] == "P"){
-
+                    ui->pressure->setText(pieces[1]);
                 }
 
                 if(pieces[0] == "T"){
-
+                    ui->temperature->setText(pieces[1]);
                 }
-
 
             }
 
