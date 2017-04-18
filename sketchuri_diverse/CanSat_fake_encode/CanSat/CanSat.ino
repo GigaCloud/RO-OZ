@@ -10,7 +10,6 @@
 #define NETWORKID     100
 #define GATEWAYID     1    
 #define ENCRYPTKEY    "CanSatRoOzCanSat"
-#define FREQUENCY     433.60
 
 #define magneto_i2c 0x1E  
 
@@ -39,8 +38,10 @@ int calValue = 1000;
 
 
 void setup(){
+  Serial.begin(9600);
 
   radio69.initialize(FREQUENCY,NODEID,NETWORKID);
+  radio69.setFrequency(433600000);
   radio69.setHighPower(); 
   radio69.encrypt(ENCRYPTKEY);
 
@@ -69,7 +70,6 @@ void getMagnetoReadings(){
   }
 }
 
-
 int readValue(){
   int val = Wire.read()<<8; 
   val |= Wire.read();
@@ -92,36 +92,6 @@ void calibrateMag(){
   yCal = y_magneto - calValue;
   zCal = z_magneto - calValue;
 }
-
-
-/* How to read the GY-80
- //get values from all sensors
- // print out values
- 
- Serial.print("\n\nAcc:");                       
- Serial.print(val.a_x,3);
- Serial.print(' ');
- Serial.print(val.a_y,3);
- Serial.print(' ');
- Serial.print(val.a_z,3);
- Serial.print('\n');
- Serial.print("Gyro:");                      
- Serial.print(val.g_x,1);
- Serial.print(' ');
- Serial.print(val.g_y,1);
- Serial.print(' ');
- Serial.print(val.g_z,1);
- Serial.print('\n');
- Serial.print("P:");                         
- Serial.print(val.p,5);
- Serial.print('\n');
- Serial.print("T:");                         
- Serial.println(val.t,1);
- Serial.print("\n\n");
- */
-
-
-
 
 void readGPS(){
   bool newData = false;
@@ -177,7 +147,6 @@ unsigned long long lastNRFTime;
 
 void loop(){
    int v[17];
-
    packet.id = 2;
    packet.hum = 200;
    packet.temp = 5;
@@ -210,8 +179,6 @@ void loop(){
 
 
   encode(v, payload, 17);
-
-      
   radio69.send(GATEWAYID, payload, sizeof(payload));   
 }
 

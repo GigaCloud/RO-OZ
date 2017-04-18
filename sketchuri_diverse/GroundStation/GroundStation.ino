@@ -15,19 +15,15 @@
 #define NODEID        1    //unique for each node on same network
 #define NETWORKID     100  //the same on all nodes that talk to each other
 #define ENCRYPTKEY    "CanSatRoOzCanSat" //exactly the same 16 characters/bytes on all nodes!
-#define FREQUENCY     433.60
 //Radio object
 RFM69 radio;
 bool promiscuousMode = false; //set to 'true' to sniff all packets on the same network
 
 void setup()
 {
-  //Initialize serial connection for debugging
   Serial.begin(9600);
   Serial.println("REBOOT");
 
-
-  //Delay to give time to the radio to power up
   delay(1000);
 
   //Initialize radio
@@ -39,9 +35,6 @@ void setup()
 
 }
 
-
-//byte ackCount=0;
-//uint32_t packetCount = 0;
 void loop()
 {
 

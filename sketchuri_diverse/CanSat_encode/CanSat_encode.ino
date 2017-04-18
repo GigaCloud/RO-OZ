@@ -31,9 +31,9 @@ struct PacketBase{
   float temp; 
 } packet;
 
-char payload[30];
+char payload[28];
 
-float flat, flon;
+float flat, flon, alti;
 
 int x_magneto, y_magneto, z_magneto;                  
 int xCal=0, yCal=0, zCal=0; 
@@ -43,23 +43,24 @@ void setup(){
   Serial.begin(115200);
   Serial1.begin(9600);
   while(!Serial){;}
-  
+  delay(1000);
+/*  
   Wire.begin();
-  printf_begin();
+  printf_begin(); *
   
   radio24.begin();
   radio24.printDetails();
   radio24.openReadingPipe(1,pipe);
   radio24.startListening();
-
+*/
   radio69.initialize(FREQUENCY,NODEID,NETWORKID);
   radio69.setHighPower(); 
   radio69.encrypt(ENCRYPTKEY);
-
+/*
   magSetting(0x00, B01101000);
   magSetting(0x01, B01100000);
   calibrateMag();
-  sensor.begin();
+  sensor.begin(); */
 }
 
 ///Magnetometer
@@ -170,63 +171,9 @@ unsigned long long lastNRFTime;
 int v[17];
 
 void loop(){
-
-/*  readGPS();
-
-  if(readNRF()){
-    getMagnetoReadings();
-    //printMagnetoReadings();
-    GY80_scaled val = sensor.read_scaled();
-    sprintf(payload,
-    "\nid: %d \nhum: %d \ntemp: %d \nlati: %i \nlongi: %i \na_x: %i \na_y: %i \na_z: %i \ng_x: %i \ng_y: %i \ng_z: %i \nP: %i \nT: %i", 
-    (int)packet.id, 
-    (int)packet.hum, 
-    (int)packet.temp, 
-    (int)(flat*100.0),
-    (int)(flon*100.0),
-    (int)(val.a_x*100.0),
-    (int)(val.a_y*100.0),
-    (int)(val.a_z*100.0),
-    (int)(val.g_x*10.0),
-    (int)(val.g_y*10.0),
-    (int)(val.g_z*10.0),
-    (int)(val.p*10000.0),
-    (int)(val.t*10.0)
-      );
-
-    Serial.print(payload); 
-    lastNRFTime = millis();
-  }
-
-  if(millis() - lastNRFTime > 1000){
-
-    //radio24.printDetails();
-    
-    getMagnetoReadings();
-    printMagnetoReadings();
-    GY80_scaled val = sensor.read_scaled();
-    sprintf(payload,
-    "\nid: %d \nlati: %i \nlongi: %i \na_x: %i \na_y: %i \na_z: %i \ng_x: %i \ng_y: %i \ng_z: %i \nP: %i \nT: %i", 
-    -1,
-    (int)(flat*100.0),
-    (int)(flon*100.0),
-    (int)(val.a_x*100.0),
-    (int)(val.a_y*100.0),
-    (int)(val.a_z*100.0),
-    (int)(val.g_x*10.0),
-    (int)(val.g_y*10.0),
-    (int)(val.g_z*10.0),
-    (int)(val.p*10000.0),
-    (int)(val.t*10.0)
-      );
-
-    Serial.println(payload);
-  }*/
-
-
-   readGPS();
+/*   readGPS();
    getMagnetoReadings();
-   GY80_scaled val = sensor.read_scaled()
+   GY80_scaled val = sensor.read_scaled();
    
    if(readNRF()){
       v[0] = packet.id;
@@ -239,32 +186,40 @@ void loop(){
       v[0] = -1;
       v[1] =  0;
       v[2] =  0;
-   }
+   } */
    
-   v[3] = val.p;
-   v[4] = val.t;
+/*   v[3] = val.p * 1000;
+   v[4] = val.t * 1000;
    
-   v[5] = flat;
-   v[6] = flon;
+   v[5] = flat * 100;
+   v[6] = flon * 100;
    v[7] = alti;
 
-   v[8]  = val.a_x; //ax
-   v[9]  = val.a_y; //ay
-   v[10] = val.a_z; //az
-
-   v[11] = val.g_x; //gx
-   v[12] = val.g_y; //gy
-   v[13] = val.g_z;//gz
+   v[8]  = val.a_x * 1000; //ax
+   v[9]  = val.a_y * 1000; //ay
+   v[10] = val.a_z * 1000; //az
+   
+   v[11] = val.g_x * 1000; //gx
+   v[12] = val.g_y * 1000; //gy
+   v[13] = val.g_z * 1000;//gz
 
    v[14] = x_magneto; //mx
    v[15] = y_magneto; //my
    v[16] = z_magneto; //mz
 
-   for(int i = 0; i<17; ++i)
+   for(int i = 0; i<17; ++i){
         Serial.println(v[i]);
+//        Serial.print(' ');
+    //    Serial.println(payload[i]);
+   }
+   
+  Serial.println("#####"); */
 
-   encode(v, payload, 17); 
+  // encode(v, payload, 17); 
+
+   sprintf(payload, "%i %i %i", 1, 2, 3);
     
    radio69.send(GATEWAYID, payload, sizeof(payload));   
+   
 }
 

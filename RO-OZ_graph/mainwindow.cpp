@@ -12,8 +12,6 @@
 #include <QWebChannel>
 #include <QUrl>
 
-QElapsedTimer timer;
-
 MainWindow::MainWindow(QWidget *parent):
     QMainWindow(parent),
         ui(new Ui::MainWindow) {
@@ -49,105 +47,27 @@ QString data_string;
 //Graph stuff
 int linie_count_hum[4];
 int linie_count_temp[4];
+int linie_count_altit;
+
+int altit_max;
+
+
 int id;
 int Toto1Alive;
 int Toto2Alive;
 int Toto3Alive;
 float lat = 46.94, lon =  26.35;
 
-bool searchPort(QString portName) {
-    foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()) {
-        qInfo() << "Name : " << info.portName();
-        qInfo() << "Description : " << info.description();
-        qInfo() << "Manufacturer: " << info.manufacturer();
-        if(info.portName() == portName){
-            portInfo = info;
-            qInfo() << "Am gasit";
-            return true;
-        }
-    }
-    return false;
-
-}
-
-bool openPort(int baud) {
-    port.close();
-    port.setPort(portInfo);
-    port.setBaudRate(baud);
-    bool success = port.open(QIODevice::ReadWrite);
-    qInfo()<<"Baud: "<<baud;
-    qInfo()<<"Port state: "<<success;
-    return success;
-}
-
-void MainWindow::portRead() {
-    port.blockSignals(true);
-    QByteArray data = port.readAll();
-    data_string = QString::fromLatin1(data.data());
-    //qInfo() << data_string;
-
-    if(fileName != NULL){
-        QFile outputFile(fileName);
-        port.blockSignals(true);
-        if (outputFile.open(QIODevice::Append)){
-            QTextStream out(&outputFile);
-            out<<data_string;
-        }
-        QThread::msleep(150);
-        outputFile.close();
-        port.blockSignals(false);
-    }
-}
-
-void MainWindow::on_openPort_clicked(){ /*"try to make connection" - button*/
-
-    portN = ui->comList->currentText();
-    qInfo()<<portN;
-    if(searchPort(portN)){
-        if(openPort(ui->baudList->currentText().toInt())){
-            qInfo() << "Success!";
-            ui->portName->clear();
-            ui->portName->setText("OPENED");
-        }
-        else{
-            qInfo() << "Failed to open";
-            ui->portName->setText("FAILED");
-        }
-    }
-    else{
-        qInfo() << "Port not found";
-        ui->portName->setText("NOT FND");
-    }
-}
-
-void MainWindow::on_portName_returnPressed() {/*Enter <=> press button*/
-    MainWindow::on_openPort_clicked();
-}
-
-
-
-void MainWindow::on_readButton_clicked() {
-    QObject::connect(&port, SIGNAL (readyRead()), this, SLOT(portRead()));
-    timer.start();
-
-    /*
-    portRead();
-
-    QString bufferString = QString::fromLocal8Bit(buffer);
-    qInfo() << bufferString;
-    ui->serialText->appendPlainText(bufferString);
-    */
-}
-
-void MainWindow::on_searchButton_clicked() {
-    ui->comList->clear();
-    foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()) {
-        qInfo() << "Name : " << info.portName();
-        ui->comList->addItem(info.portName());
-    }
-}
 
 void MainWindow::on_fileButton_clicked() {
+
+    for(int i=1; i<4; ++i){
+        linie_count_hum[i]  = 10000;
+        linie_count_temp[i] = 10000;
+
+    }
+
+    linie_count_altit = 10000;
 
     fileName = QFileDialog::getOpenFileName(this, tr("Open Log File"), "C:/", tr("Text (*.txt)"));
 
@@ -162,8 +82,6 @@ void MainWindow::on_fileButton_clicked() {
 
     QObject::connect(ui->zoom, SIGNAL(valueChanged(int)), this, SLOT(updateMap()));
 }
-
-
 
 double maximumValue(QVector<double> vector1, QVector<double> vector2, int linie_count_1, int linie_count_2){
     double maxim1 = 0;
@@ -217,11 +135,14 @@ void MainWindow::fisierModificat() {
     QVector<double> x_temp_3(linie_count_temp[3] + 100), y_temp_3(linie_count_temp[3] + 100);
     QVector<double> x_hum_3(linie_count_hum[3] + 100), y_hum_3(linie_count_hum[3] + 100);
 
+    QVector<double> x_altit(linie_count_altit + 100), y_altit(linie_count_altit + 100);
+
     for(int i=1; i<4; ++i){
         linie_count_hum[i]  = 0;
         linie_count_temp[i] = 0;
     }
 
+    linie_count_altit = 0;
 
     QFile inputFile(fileName);
     if (inputFile.open(QIODevice::ReadOnly)){
@@ -241,7 +162,7 @@ void MainWindow::fisierModificat() {
                 switch(id)
                 {
                     case -1:{
-                        qInfo()<<"Fara date de la sonda";
+                        qInfo()<<"Fara date de la sonda"; break;
                     }
 
                     case 1:{
@@ -317,7 +238,8 @@ void MainWindow::fisierModificat() {
                     }
                 }
 
-                if(pieces[0] == "lat"){
+               if(pieces[0] == "lat"){
+                  if(pieces[1].toInt() > 1000){
                     QByteArray b = pieces[1].toLatin1();
                     QString latWithDecimal;
                     latWithDecimal += b[1];
@@ -327,9 +249,11 @@ void MainWindow::fisierModificat() {
                         latWithDecimal += b[i];
                     lat = latWithDecimal.toFloat();
                     ui->latitude->setText(latWithDecimal);
+                  }
                 }
 
                 if(pieces[0] == "lon"){
+                   if(pieces[1].toInt() > 1000){
                     QByteArray b = pieces[1].toLatin1();
                     QString lonWithDecimal;
                     lonWithDecimal += b[1];
@@ -339,13 +263,16 @@ void MainWindow::fisierModificat() {
                         lonWithDecimal += b[i];
                     lon = lonWithDecimal.toFloat();
                     ui->longitude->setText(lonWithDecimal);
-
-                    updateMap();
-                    //connect(ui->zoom, SIGNAL(valueChanged(int), this, updateMap(lat, lon, ui->zoom->value()));
+                    }
+                  //  updateMap();
                 }
 
-                if(pieces[0] == "lat_p"){
-                    ui->latitude->setText(pieces[1]);
+                if(pieces[0] == "alt"){
+                    ui->altitude->setText(pieces[1]);
+                    x_altit[linie_count_altit] = linie_count_altit;
+                    y_altit[linie_count_altit] = pieces[1].toInt();
+                    if(pieces[1].toInt() > altit_max) altit_max = pieces[1].toInt();
+                    linie_count_altit += 1;
                 }
 
                 if(pieces[0] == "a_x"){
@@ -389,7 +316,12 @@ void MainWindow::fisierModificat() {
                 }
 
                 if(pieces[0] == "T"){
-                    ui->temperature->setText(pieces[1]);
+                    int T = pieces[1].toInt();
+                    if(T<0) T*=(-1);
+                    float fT = T;
+                    if(T > 10000) fT /=  float(100);
+                    if(T > 1000)  fT /= float(10);
+                    ui->temperature->setText(QString::number(fT));
                 }
 
             }
@@ -491,7 +423,7 @@ void MainWindow::fisierModificat() {
     ++Toto2Alive;
     ++Toto3Alive;
 
-
+    if(id == 1){
     ui->Toto1Text->setAutoFillBackground(true);
     ui->Toto1Text->setPalette(greenAF);
     ui->Toto1Text->show();
@@ -510,8 +442,9 @@ void MainWindow::fisierModificat() {
     ui->Toto1->yAxis->setLabel("Temp, Hum");
 
     ui->Toto1->replot();
+    }
 
-
+    if(id == 2){
     //A doua sonda
     ui->Toto2->addGraph();
     ui->Toto2->graph(0)->setData(x_temp_2, y_temp_2);
@@ -528,8 +461,10 @@ void MainWindow::fisierModificat() {
 
     ui->Toto2->replot();
 
+    }
 
     //A treia sonda
+    if(id == 3){
     ui->Toto3->addGraph();
     ui->Toto3->graph(0)->setData(x_temp_3, y_temp_3);
     ui->Toto3->graph(0)->setPen(QColor(255,0,0,255));
@@ -544,6 +479,14 @@ void MainWindow::fisierModificat() {
     ui->Toto3->yAxis->setLabel("Temp, Hum");
 
     ui->Toto3->replot();
+    }
+
+    ui->Dorothy->addGraph();
+    ui->Dorothy->graph(0)->setData(x_altit, y_altit);
+    ui->Dorothy->xAxis->setRange(0, linie_count_altit);
+    ui->Dorothy->yAxis->setRange(0, altit_max);
+    ui->Dorothy->replot();
+
 
 
 }

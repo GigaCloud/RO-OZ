@@ -3,7 +3,7 @@
 #include "RF24.h"
 #include "printf.h"
 char msg;
-RF24 radio(9,10);
+RF24 radio(5,6);
 const uint64_t pipe = 0xE8E8F0F0E1LL;
 
 struct PacketBase{

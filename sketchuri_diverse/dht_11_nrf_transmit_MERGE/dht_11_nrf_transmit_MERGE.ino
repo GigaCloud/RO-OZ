@@ -31,7 +31,7 @@ float temp, humi;
 
 void loop(void){
 
-  packet.id = 1;
+  packet.id = 2;
   
   if((err=dht11.read(packet.hum, packet.temp))==0){
        Serial.print(packet.temp);

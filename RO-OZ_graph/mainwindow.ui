@@ -64,97 +64,6 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>740</x>
-      <y>10</y>
-      <width>449</width>
-      <height>68</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="PortStuff">
-     <item>
-      <widget class="QPushButton" name="openPort">
-       <property name="text">
-        <string>OpenPort</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QComboBox" name="comList"/>
-       </item>
-       <item>
-        <widget class="QComboBox" name="baudList">
-         <item>
-          <property name="text">
-           <string>9600</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>19200</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>38400</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>57600</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>74880</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>115200</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>230400</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>250000</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <widget class="QPushButton" name="searchButton">
-       <property name="text">
-        <string>Search Ports</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="portName">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="readButton">
-       <property name="text">
-        <string>Read</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
    <widget class="QCustomPlot" name="Toto2" native="true">
     <property name="geometry">
      <rect>
@@ -839,7 +748,6 @@ p, li { white-space: pre-wrap; }
      <number>0</number>
     </property>
    </widget>
-   <zorder>layoutWidget</zorder>
    <zorder>layoutWidget</zorder>
    <zorder>Toto1</zorder>
    <zorder>layoutWidget</zorder>

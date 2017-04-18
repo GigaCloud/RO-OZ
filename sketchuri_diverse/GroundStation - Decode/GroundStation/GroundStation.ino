@@ -15,10 +15,11 @@
 #define NODEID        1    //unique for each node on same network
 #define NETWORKID     100  //the same on all nodes that talk to each other
 #define ENCRYPTKEY    "CanSatRoOzCanSat" //exactly the same 16 characters/bytes on all nodes!
-#define FREQUENCY     433.60
+
+
 //Radio object
 RFM69 radio;
-bool promiscuousMode = false; //set to 'true' to sniff all packets on the same network
+bool promiscuousMode = true; //set to 'true' to sniff all packets on the same network
 
 void setup()
 {
@@ -27,12 +28,13 @@ void setup()
   Serial.println("REBOOT");
 
 
-  //Delay to give time to the radio to power up
   delay(1000);
 
   //Initialize radio
   radio.initialize(FREQUENCY,NODEID,NETWORKID);
-  radio.setHighPower(); //Use the high power capabilities of the RFM69HW
+  radio.setFrequency(433600000);
+  radio.setHighPower();
+  
   radio.encrypt(ENCRYPTKEY);
   radio.promiscuous(promiscuousMode);
   Serial.println("Listening at 433 Mhz");
@@ -66,9 +68,8 @@ void loop()
   int v[17];
   if (radio.receiveDone())
   {
-
      decode(radio.DATA, v, 17); 
-     Serial.println("#########################");
+     Serial.println("###RO-OZ###");
      Serial.print("id: "); Serial.println(v[0]);
      Serial.print("hum: "); Serial.println(v[1]);
      Serial.print("temp: "); Serial.println(v[2]);
@@ -80,19 +81,19 @@ void loop()
      Serial.print("lon: "); Serial.println(v[6]);
      Serial.print("alt: "); Serial.println(v[7]);
 
-     Serial.print("ax: "); Serial.println(v[8]);
-     Serial.print("ay: "); Serial.println(v[9]);
-     Serial.print("az: "); Serial.println(v[10]);
+     Serial.print("a_x: "); Serial.println(v[8]);
+     Serial.print("a_y: "); Serial.println(v[9]);
+     Serial.print("a_z: "); Serial.println(v[10]);
 
-     Serial.print("gx: "); Serial.println(v[11]);
-     Serial.print("gy: "); Serial.println(v[12]);
-     Serial.print("gz: "); Serial.println(v[13]);
+     Serial.print("g_x: "); Serial.println(v[11]);
+     Serial.print("g_y: "); Serial.println(v[12]);
+     Serial.print("g_z: "); Serial.println(v[13]);
 
-     Serial.print("mx: "); Serial.println(v[14]);
-     Serial.print("my: "); Serial.println(v[15]);
-     Serial.print("mz: "); Serial.println(v[16]);
+     Serial.print("m_x: "); Serial.println(v[14]);
+     Serial.print("m_y: "); Serial.println(v[15]);
+     Serial.print("m_z: "); Serial.println(v[16]);
+     Serial.println();
   }
-
 }
 
 
