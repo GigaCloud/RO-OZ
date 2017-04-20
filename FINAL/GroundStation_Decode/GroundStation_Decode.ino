@@ -6,6 +6,7 @@
 #define NETWORKID     42 
 #define ENCRYPTKEY    "CanSatRoOzCanSat" 
 
+
 RFM69 radio;
 bool promiscuousMode = true;
 

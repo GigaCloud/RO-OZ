@@ -188,7 +188,7 @@ bool readNRF()
 }
 
 void encode(int16_t * in , char * encoded, int numbers) 
-{//Ceva functie simpla de care-s oleaca mandru ca reduce packet size
+{       //Ceva functie simpla de care-s oleaca mandru ca reduce packet size
         int poz_in = 0;
         int poz_encoded = 0;
         int16_t x;
@@ -204,8 +204,8 @@ void encode(int16_t * in , char * encoded, int numbers)
         }
 }
 
-void buzz() 
-{//SOS beep
+void buzz()//SOS beep
+{
         digitalWrite(Buzzer, HIGH);
         delay(100);
         digitalWrite(Buzzer, LOW);
@@ -244,7 +244,8 @@ void buzz()
 
 }
 
-void nobuzz() { //STFU
+void nobuzz() //STFU
+{ 
         digitalWrite(Buzzer, LOW);
 }
 
@@ -300,7 +301,7 @@ void loop() //impachetare in v, encoding, chestii trestii
                 if (deltaInit < 0) deltaInit *= -1;
 
                 if (deltaInit > 10) { //dupa vreo +85m
-                        afterAscend == true;
+                        afterAscend = true;
                 }
 
                 Serial.print("deltaInit: ");Serial.println(deltaInit);
