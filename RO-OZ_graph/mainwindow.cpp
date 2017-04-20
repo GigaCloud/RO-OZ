@@ -56,8 +56,8 @@ int id;
 int Toto1Alive;
 int Toto2Alive;
 int Toto3Alive;
-float lat = 46.94, lon =  26.35;
-
+float lat = 46.9400, lon =  26.3500;
+int map_update_count;
 
 void MainWindow::on_fileButton_clicked() {
 
@@ -72,9 +72,9 @@ void MainWindow::on_fileButton_clicked() {
     fileName = QFileDialog::getOpenFileName(this, tr("Open Log File"), "C:/", tr("Text (*.txt)"));
 
     if(fileName != NULL)
-    qInfo() << "opened: "<< date.addPath(fileName);
+        date.addPath(fileName);
 
-    qInfo() << date.files();
+    //qInfo() << date.files();
 
     ui->fileBox->setText(fileName);
 
@@ -124,7 +124,7 @@ void MainWindow::fisierModificat() {
         ++linie_count_hum[i];
         ++linie_count_temp[i];
     }
-    qInfo()<<"Fisier modificat";
+    //qInfo()<<"Fisier modificat";
 
     QVector<double> x_temp_1(linie_count_temp[1] + 100), y_temp_1(linie_count_temp[1] + 100);
     QVector<double> x_hum_1(linie_count_hum[1] + 100), y_hum_1(linie_count_hum[2] + 100);
@@ -150,26 +150,23 @@ void MainWindow::fisierModificat() {
         while (!in.atEnd()){
             bool ok = false;
             QString line = in.readLine();
-            qInfo()<<line;
+            //qInfo()<<line;
             QStringList pieces = line.split(":");
             if(pieces.size() > 1){
-                qInfo()<<pieces[0];
+                //qInfo()<<pieces[0];
                 if(pieces[0] == "id"){
                     id = pieces[1].toInt();
-                    qInfo()<<id;
+                    //qInfo()<<id;
                 }
 
                 switch(id)
                 {
-                    case -1:{
-                        qInfo()<<"Fara date de la sonda"; break;
-                    }
 
                     case 1:{
                         if(pieces[0] == "temp"){
                             double temp = pieces[1].toDouble(&ok);
                             if(ok){
-                                qInfo()<<"temp"<<temp;
+                                //qInfo()<<"temp"<<temp;
                                 y_temp_1[linie_count_temp[id]] = temp;
                                 x_temp_1[linie_count_temp[id]] = linie_count_temp[id];
                                 ++linie_count_temp[id];
@@ -181,7 +178,7 @@ void MainWindow::fisierModificat() {
                             if(ok){
                                 y_hum_1[linie_count_hum[id]] = hum;
                                 x_hum_1[linie_count_hum[id]] = linie_count_hum[id];
-                                qInfo()<<"hum"<<hum;
+                                //qInfo()<<"hum"<<hum;
                                 ++linie_count_hum[id];
                             }
                         }
@@ -193,7 +190,7 @@ void MainWindow::fisierModificat() {
                         if(pieces[0] == "temp"){
                             double temp = pieces[1].toDouble(&ok);
                             if(ok){
-                                qInfo()<<"temp"<<temp;
+                                //qInfo()<<"temp"<<temp;
                                 y_temp_2[linie_count_temp[id]] = temp;
                                 x_temp_2[linie_count_temp[id]] = linie_count_temp[id];
                                 ++linie_count_temp[id];
@@ -205,7 +202,7 @@ void MainWindow::fisierModificat() {
                             if(ok){
                                 y_hum_2[linie_count_hum[id]] = hum;
                                 x_hum_2[linie_count_hum[id]] = linie_count_hum[id];
-                                qInfo()<<"hum"<<hum;
+                                //qInfo()<<"hum"<<hum;
                                 ++linie_count_hum[id];
                             }
                         }
@@ -217,7 +214,7 @@ void MainWindow::fisierModificat() {
                         if(pieces[0] == "temp"){
                             double temp = pieces[1].toDouble(&ok);
                             if(ok){
-                                qInfo()<<"temp"<<temp;
+                                //qInfo()<<"temp"<<temp;
                                 y_temp_3[linie_count_temp[id]] = temp;
                                 x_temp_3[linie_count_temp[id]] = linie_count_temp[id];
                                 ++linie_count_temp[id];
@@ -229,7 +226,7 @@ void MainWindow::fisierModificat() {
                             if(ok){
                                 y_hum_3[linie_count_hum[id]] = hum;
                                 x_hum_3[linie_count_hum[id]] = linie_count_hum[id];
-                                qInfo()<<"hum"<<hum;
+                                //qInfo()<<"hum"<<hum;
                                 ++linie_count_hum[id];
                             }
                         }
@@ -264,15 +261,18 @@ void MainWindow::fisierModificat() {
                     lon = lonWithDecimal.toFloat();
                     ui->longitude->setText(lonWithDecimal);
                     }
-                  //  updateMap();
+
+
                 }
 
                 if(pieces[0] == "alt"){
-                    ui->altitude->setText(pieces[1]);
-                    x_altit[linie_count_altit] = linie_count_altit;
-                    y_altit[linie_count_altit] = pieces[1].toInt();
-                    if(pieces[1].toInt() > altit_max) altit_max = pieces[1].toInt();
-                    linie_count_altit += 1;
+                    if(pieces[1].toInt() < 1500){
+                        ui->altitude->setText(pieces[1]);
+                        x_altit[linie_count_altit] = linie_count_altit;
+                        y_altit[linie_count_altit] = pieces[1].toInt();
+                        if(pieces[1].toInt() > altit_max) altit_max = pieces[1].toInt();
+                        linie_count_altit += 1;
+                    }
                 }
 
                 if(pieces[0] == "a_x"){

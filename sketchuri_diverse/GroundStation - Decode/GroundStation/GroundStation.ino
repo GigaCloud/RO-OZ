@@ -62,13 +62,22 @@ void decode(char *encoded, int16_t *decoded,  int decoded_size){
     }
 }
 
+int cifre(unsigned long x){
+    int c = 0;
+    while(x > 0){
+      x/=10;
+      ++c;
+    }
+    
+    return c;
+}
 
 void loop()
 {
-  int v[17];
+  int v[19];
   if (radio.receiveDone())
   {
-     decode(radio.DATA, v, 17); 
+     decode(radio.DATA, v, 19); 
      Serial.println("###RO-OZ###");
      Serial.print("id: "); Serial.println(v[0]);
      Serial.print("hum: "); Serial.println(v[1]);
@@ -76,11 +85,30 @@ void loop()
      
      Serial.print("P: "); Serial.println(v[3]);
      Serial.print("T: "); Serial.println(v[4]);
+
+     unsigned long lat = v[5];
+     unsigned long lon = v[6];
+     unsigned long lat_precision = v[17];
+     unsigned long lon_precision = v[18];
      
+     Serial.print("lat: "); Serial.print(lat);
+     for(int i=0; i < 4 - cifre(lat_precision); ++i){
+          Serial.print('0');
+        } 
+     Serial.println(lat_precision);
+
+     Serial.print("lon: "); Serial.print(lon);
+     for(int i=0; i < 4 - cifre(lon_precision); ++i){
+          Serial.print('0');
+        } 
+     Serial.println(lon_precision);
+     
+   /*  
      Serial.print("lat: "); Serial.println(v[5]);
      Serial.print("lon: "); Serial.println(v[6]);
+*/   
      Serial.print("alt: "); Serial.println(v[7]);
-
+     
      Serial.print("a_x: "); Serial.println(v[8]);
      Serial.print("a_y: "); Serial.println(v[9]);
      Serial.print("a_z: "); Serial.println(v[10]);
